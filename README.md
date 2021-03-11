@@ -1,8 +1,16 @@
 # crawloop
 基于PlayWright实现对js渲染的动态网页进行抓取，包含网页源码、截图、网站入口、网页交互过程等，支持优先级任务调度。
 
+crawloop 目前支持一下特性
+- 原生浏览器环境，支持chrome、firefox，协程处理调度任务
+- 完整DOM事件手机，自动化触发
+- 全面分析收集，包括js文件，页面源码、网站截图、网站图标、标题、编码、cookies、重定向链等等
+- 支持Host绑定，可自定义添加Referer
+- 支持请求代理，支持爬虫结果主动回调
 
-### 安装（Docker）
+
+
+### 环境（Docker）
 - Docker 18.03+
 - Postgresl 9.x+
 - Rabbitmq 3.8.x+
