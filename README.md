@@ -22,12 +22,14 @@ crawloop 目前支持一下特性
 Crawloop的架构包括了一个主节点（Master Node）和多个工作节点（Worker Node），以及负责通信和数据储存的gRPC和Postgresql数据库。
 
 ![](http://static-docs.crawlab.cn/architecture.png)
+
+
 (上图架构有所变化，Mongo改为Postgresl，Redis改为rabbitMq)
 
 客户端应用向主节点请求数据，主节点通过Celery和Rabbitmq来执行任务派发调度以及负载均衡，工作节点收到任务之后，开始执行爬虫任务，并将任务结果通过gRPC回调给主节点，之后落库存储。
 
 
-主节点是整个Crawlab架构的核心，属于Crawlab的中控系统。
+主节点是整个Crawloop架构的核心，属于Crawloop的中控系统。
 
 主节点主要负责以下功能:
 1. 周期性任务调度
