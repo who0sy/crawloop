@@ -2,24 +2,29 @@ FROM python:3.7
 
 ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PYTHONUNBUFFERED=1
 
+# 替换默认源
 COPY ./sources.list /etc/apt/
 
+# 安装依赖
 RUN apt-get update && apt-get -y install libnss3 xvfb gconf-service libasound2 libatk1.0-0 libc6 libcairo2 libcups2 \
   libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libgconf-2-4 libgdk-pixbuf2.0-0 libglib2.0-0 \
   libgtk-3-0 libnspr4 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 \
   libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 \
   libxtst6 ca-certificates fonts-liberation libappindicator1 libnss3 lsb-release xdg-utils wget
 
-# set timezone
+# 设置时区
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-# set zh font
+# 设置默认字体库
 COPY ./msyh.ttf /usr/share/fonts/
 RUN fc-cache -fv
 
+# 开启xvfb虚拟显示器
 RUN Xvfb -screen 0 1020x720x16 :99 &
 RUN export DISPLAY=:99
 ENV DISPLAY=:99
 
-RUN pip install -U pip -i https://pypi.douban.com/simple && pip install pyppeteer psutil -i https://pypi.douban.com/simple && pyppeteer-install
+# 安装playwright驱动
+RUN pip install playwright==0.162.2 -i https://pypi.douban.com/simple
+RUN python -m playwright install

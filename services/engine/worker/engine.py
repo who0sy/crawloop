@@ -34,7 +34,6 @@ def delivery_task(task_id):
     servers_info = server_model_proxy.query_servers_by_score(sort='desc')
     if not servers_info:
         task_model_proxy.set_many_attr(obj_id=task_id, fields_v={'task_status': 'No server found！', 'finished': True})
-        # TODO 回调调用方任务状态
         raise RecordNotFound('No server found！')
 
     ###### 投递子任务
@@ -103,9 +102,6 @@ def delete_task(task_id):
     har_ids = [each.har_uuid + '.json' for each in
                result_query.filter(result_model_proxy.model.har_uuid.isnot(None)).all()]
     remove_files(path='hars', file_ids=har_ids)
-
-    # 删除图标
-    # TODO
 
     # 删除结果
     result_query.delete(synchronize_session=False)

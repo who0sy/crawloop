@@ -1,8 +1,8 @@
 version: '3.7'
 
 services:
-  crawloop-spider-client-n1:
-    container_name: crawloop-spider-client-n1
+  spider-client:
+    container_name: spider-client
     build:
       context: ./services/spider
       dockerfile: Dockerfile-dev
@@ -11,35 +11,35 @@ services:
     ports:
       - 15001:5000
     env_file:
-      - crawloop-spider-dev.env
+      - spider.env
     environment:
       - FLASK_APP=webs:create_app
       - ENDPOINT=web
     restart: always
 
-  crawloop-spider-fetch-n1:
-    container_name: crawloop-spider-fetch-n1
+  spider-fetch:
+    container_name: spider-fetch
     build:
       context: ./services/spider
       dockerfile: Dockerfile-dev
     volumes:
       - './services/spider:/usr/src/app'
     env_file:
-      - crawloop-spider-dev.env
+      - spider.env
     environment:
       - ENDPOINT=fetch
     restart: always
 
 
-  crawloop-save-results-n1:
-    container_name: crawloop-save-results-n1
+  save-results:
+    container_name: save-results
     build:
       context: ./services/spider
       dockerfile: Dockerfile-dev
     volumes:
       - './services/spider:/usr/src/app'
     env_file:
-      - crawloop-spider-dev.env
+      - spider.env
     environment:
       - ENDPOINT=results
     restart: always
