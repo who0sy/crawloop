@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+  crawloop-spider-client-n1:
+    image: harbor.socmap.net/crawloop/crawloop-spider:v0.0.2
+    container_name: crawloop-spider-client-n1
+    volumes:
+      - './spider_screenshots:/usr/src/app/screenshots'
+      - './spider_hars:/usr/src/app/hars'
+    ports:
+      - 15001:5000
+    env_file:
+      - crawloop-spider-prod.env
+    environment:
+      - FLASK_APP=webs:create_app
+      - ENDPOINT=web
+    restart: always
+
+  crawloop-spider-fetch:
+    image: harbor.socmap.net/crawloop/crawloop-spider:v0.0.2
+    container_name: crawloop-spider-fetch-n1
+    volumes:
+      - './spider_screenshots:/usr/src/app/screenshots'
+      - './spider_hars:/usr/src/app/hars'
+    env_file:
+      - crawloop-spider-prod.env
+    environment:
+      - ENDPOINT=fetch
+    ipc: host
+    restart: always
+
+
+  crawloop-save-results:
+    image: harbor.socmap.net/crawloop/crawloop-spider:v0.0.2
+    container_name: crawloop-save-results
+    volumes:
+      - './spider_screenshots:/usr/src/app/screenshots'
+      - './spider_hars:/usr/src/app/hars'
+    env_file:
+      - crawloop-spider-prod.env
+    environment:
+      - ENDPOINT=results
+    restart: always

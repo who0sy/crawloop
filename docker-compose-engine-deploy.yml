@@ -1,0 +1,54 @@
+version: '3.7'
+
+services:
+  crawloop-engine-client:
+    image: harbor.socmap.net/crawloop/crawloop-engine:v0.0.3
+    container_name: crawloop-engine-client
+    volumes:
+      - './screenshots:/usr/src/app/screenshots'
+      - './hars:/usr/src/app/hars'
+    ports:
+      - 15000:5000
+    env_file:
+      - crawloop-engine-prod.env
+    environment:
+      - FLASK_APP=webs:create_app
+      - ENDPOINT=web
+    restart: always
+
+  crawloop-engine-worker:
+    image: harbor.socmap.net/crawloop/crawloop-engine:v0.0.3
+    container_name: crawloop-engine-worker
+    volumes:
+      - './screenshots:/usr/src/app/screenshots'
+      - './hars:/usr/src/app/hars'
+    env_file:
+      - crawloop-engine-prod.env
+    environment:
+      - ENDPOINT=engine-worker
+    restart: always
+
+  crawloop-engine-grpc:
+    image: harbor.socmap.net/crawloop/crawloop-engine:v0.0.3
+    container_name: crawloop-engine-grpc
+    volumes:
+      - './screenshots:/usr/src/app/screenshots'
+      - './hars:/usr/src/app/hars'
+    ports:
+      - 15002:15002
+    env_file:
+      - crawloop-engine-prod.env
+    environment:
+      - ENDPOINT=engine-grpc
+    restart: always
+
+  crawloop-engine-apscheduler:
+    image: harbor.socmap.net/crawloop/crawloop-engine:v0.0.3
+    container_name: crawloop-engine-apscheduler
+    ports:
+      - 15003:15003
+    env_file:
+      - crawloop-engine-prod.env
+    environment:
+      - ENDPOINT=apscheduler
+    restart: always

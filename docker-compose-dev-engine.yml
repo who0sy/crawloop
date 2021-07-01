@@ -1,0 +1,61 @@
+version: '3.7'
+
+services:
+  crawloop-engine:
+    container_name: crawloop-engine
+    build:
+      context: ./services/engine
+      dockerfile: Dockerfile-dev
+    volumes:
+      - './services/engine:/usr/src/app'
+    ports:
+      - 15000:5000
+    env_file:
+      - crawloop-dev.env
+    environment:
+      - FLASK_APP=webs:create_app
+      - ENDPOINT=web
+    restart: always
+
+  crawloop-engine-worker:
+    container_name: crawloop-engine-worker
+    build:
+      context: ./services/engine
+      dockerfile: Dockerfile-dev
+    volumes:
+      - './services/engine:/usr/src/app'
+    env_file:
+      - crawloop-dev.env
+    environment:
+      - ENDPOINT=engine-worker
+    restart: always
+
+  crawloop-engine-grpc:
+    container_name: crawloop-engine-grpc
+    build:
+      context: ./services/engine
+      dockerfile: Dockerfile-dev
+    volumes:
+      - './services/engine:/usr/src/app'
+    ports:
+      - 15002:15002
+    env_file:
+      - crawloop-dev.env
+    environment:
+      - ENDPOINT=engine-grpc
+    restart: always
+
+  crawloop-engine-apscheduler:
+    container_name: crawloop-engine-apscheduler
+    build:
+      context: ./services/engine
+      dockerfile: Dockerfile-dev
+    volumes:
+      - './services/engine:/usr/src/app'
+    ports:
+      - 15003:15003
+    env_file:
+      - crawloop-dev.env
+    environment:
+      - ENDPOINT=apscheduler
+    restart: always

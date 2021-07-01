@@ -1,0 +1,25 @@
+FROM harbor.socmap.net/crawloop/playwright-xvfb:v1.0.0
+
+WORKDIR /usr/src/app
+
+COPY ./requirements.txt /usr/src/app
+
+RUN apt update && \
+    apt-get -y install netcat && \
+    rm -rf /var/lib/apt/lists/*
+
+
+# set timezone
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN pip install --upgrade pip -i https://pypi.douban.com/simple && \
+    pip install -r requirements.txt -i https://pypi.douban.com/simple
+
+COPY . /usr/src/app
+
+RUN sh build.sh
+
+CMD ["/usr/src/app/entrypoint.sh"]
+
+

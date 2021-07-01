@@ -1,0 +1,25 @@
+FROM harbor.socmap.net/library/python:3.7
+WORKDIR /usr/src/app
+COPY ./requirements.txt /usr/src/app
+RUN pip install --upgrade pip -i https://mirrors.aliyun.com/pypi/simple/ && \
+    pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
+COPY . /usr/src/app
+RUN sh build.sh
+
+FROM python:3.7-slim
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8 PYTHONUNBUFFERED=1
+COPY ./sources.list /etc/apt/sources.list
+RUN apt update && \
+    apt-get -y install netcat && \
+    rm -rf /var/lib/apt/lists/*
+
+# set timezone
+ENV TZ=Asia/Shanghai
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+WORKDIR /usr/src/app
+COPY ./requirements.txt /usr/src/app
+RUN pip install --upgrade pip -i https://mirrors.aliyun.com/pypi/simple/ && \
+    pip install -r requirements.txt -i https://mirrors.aliyun.com/pypi/simple/
+COPY --from=0 /usr/src/app ./
+CMD ["/usr/src/app/entrypoint.sh"]

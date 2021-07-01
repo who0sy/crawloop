@@ -1,0 +1,10 @@
+env
+*.env
+.dockerignore
+Dockerfile-dev
+Dockerfile-prod
+htmlcov
+celerybeat-shcedule
+scheduler.lock
+celerybeat.pid
+

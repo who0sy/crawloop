@@ -1,0 +1,110 @@
+// 使用proto3协议
+syntax = "proto3";
+
+// 当前包
+package result;
+
+
+// 定义服务
+service Result {
+  // 保存基本爬取信息
+  rpc SaveBaseResult(SaveBaseResultRequest)  returns (SaveBaseResultResponse);
+  // 基于流式传输图片
+  rpc StreamUploadPicture(stream StreamUploadPictureRequest) returns (StreamUploadPictureResponse);
+  // 基于流式传输har文件
+  rpc StreamUploadHarFile(stream StreamUploadHarFileRequest) returns (StreamUploadHarFileResponse);
+  // 标记子任务爬取状态
+  rpc SetSubTaskStatus(SetSubTaskStatusRequest) returns (SetSubTaskStatusResponse);
+}
+
+
+// 请求参数
+message SaveBaseResultRequest {
+  int32 subtask_id = 1;
+  int32 url_id = 2;
+  string url_address = 3;
+  int32 http_code = 4;
+  string title = 5;
+  string content = 6;
+  string current_url = 7;
+  string screenshot_id = 8;
+  string response_headers = 9;
+  string finished_at = 10;
+  string har_uuid = 11;
+  repeated RedirectChain redirect_chain = 12;
+  repeated Cookies cookies = 13;
+  int32 response_time = 14;
+  int32 load_complete_time = 15;
+}
+
+
+// 网站重定向链接链表
+message RedirectChain {
+  string redirect_url = 1;
+  int32 redirect_http_code = 2;
+}
+
+
+// Cookies
+message Cookies {
+  string name = 1;
+  string path = 2;
+  string value = 3;
+  string domain = 4;
+  bool secure = 5;
+  int64 expires = 6;
+  bool httpOnly = 7;
+  string sameSite = 8;
+}
+
+
+// 响应
+message SaveBaseResultResponse{
+  bool status = 1;
+}
+
+// 图片流
+message StreamUploadPictureRequest {
+  message FileData {
+    string filename = 1;
+    bytes buffer = 2;
+  }
+  oneof payload {
+    string filename = 1;
+    FileData file_data = 2;
+  }
+}
+
+// 图片长度
+message StreamUploadPictureResponse {
+  int32 length = 1;
+}
+
+// 子任务id、状态
+message SetSubTaskStatusRequest {
+  int32 subtask_id = 1;
+  bool status = 2;
+  string finished_at = 3;
+}
+
+// 设置子任务状态响应
+message SetSubTaskStatusResponse {
+  bool set_success = 1;
+}
+
+// har文件流
+message StreamUploadHarFileRequest {
+  message FileData {
+    string filename = 1;
+    bytes buffer = 2;
+  }
+  oneof payload {
+    string filename = 1;
+    FileData file_data = 2;
+  }
+}
+
+// har文件流大小
+message StreamUploadHarFileResponse {
+  int32 length = 1;
+}
